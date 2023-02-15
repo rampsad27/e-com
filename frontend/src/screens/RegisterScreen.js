@@ -100,5 +100,5 @@ Have an Account?{' '}
 </Col>
 </Row>
 </FormContainer>
-)}
+)
 export default RegisterScreen
