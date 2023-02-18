@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
+//import { useParams, useNavigate } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-//import Paginate from '../components/Paginate'
+import Paginate from '../components/Paginate'
 import {
   listProducts,
   deleteProduct,
@@ -12,8 +13,13 @@ import {
 } from '../actions/productActions'
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
-const ProductListScreen = ({ history, match }) => {
+const ProductListScreen = ({ navigate, match }) => {
   const pageNumber = match.params.pageNumber || 1
+
+// const ProductListScreen = () => {
+//   const params = useParams()
+//   const navigate = useNavigate()
+//   const pageNumber = params.pageNumber || 1
 
   const dispatch = useDispatch()
 
@@ -41,18 +47,18 @@ const ProductListScreen = ({ history, match }) => {
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET })
 
-    if (!userInfo || !userInfo.isAdmin) {
-      history.push('/login')
+    if (!userInfo.isAdmin) {
+      navigate('/login')
     }
 
     if (successCreate) {
-      history.push(`/admin/product/${createdProduct._id}/edit`)
+      navigate(`/admin/product/${createdProduct._id}/edit`)
     } else {
       dispatch(listProducts('', pageNumber))
     }
   }, [
     dispatch,
-    history,
+    navigate,
     userInfo,
     successDelete,
     successCreate,
@@ -66,7 +72,7 @@ const ProductListScreen = ({ history, match }) => {
     }
   }
 
-  const createProductHandler = () => {
+  const createProductHandler = (product) => {
     dispatch(createProduct())
   }
 
@@ -76,7 +82,7 @@ const ProductListScreen = ({ history, match }) => {
         <Col>
           <h1>Products</h1>
         </Col>
-        <Col className='text-right'>
+        <Col className='text-end'>
           <Button className='my-3' onClick={createProductHandler}>
             <i className='fas fa-plus'></i> Create Product
           </Button>
@@ -129,7 +135,8 @@ const ProductListScreen = ({ history, match }) => {
               ))}
             </tbody>
           </Table>
-          {/* //<Paginate pages={pages} page={page} isAdmin={true} /> */}
+          <Paginate pages={pages} page={page} isAdmin={true}
+           />
         </>
       )}
     </>
